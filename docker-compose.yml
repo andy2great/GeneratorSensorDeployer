@@ -10,5 +10,5 @@ services:
     restart: always
     ports:
       - "59595:59595"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - dockernet
