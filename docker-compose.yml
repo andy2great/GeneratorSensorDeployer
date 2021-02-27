@@ -10,4 +10,5 @@ services:
     restart: always
     ports:
       - "59595:59595"
-    network_mode: "host"
+    extra_hosts:
+      - "host.docker.internal:$DOCKER_HOST_IP"
