@@ -11,4 +11,4 @@ services:
     ports:
       - "59595:59595"
     extra_hosts:
-      - "localhost:10.XX.XX.XX"
+      - "docker.for.linux.localhost:$DOCKERHOST"
