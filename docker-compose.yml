@@ -10,8 +10,4 @@ services:
     restart: always
     ports:
       - "59595:59595"
-    networks:
-      - dockernet
-networks:
-    dockernet:
-        external: true
+    network_mode: "host"
