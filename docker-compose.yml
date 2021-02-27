@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  interface:
+    build: ../GeneratorSensorGateringInterface
+    restart: always
+    ports:
+      - "80:80"
+  server:
+    build: ../GeneratorSensorGateringServer
+    restart: always
+    ports:
+      - "59595:59595"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
