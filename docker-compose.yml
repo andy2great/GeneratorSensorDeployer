@@ -12,3 +12,6 @@ services:
       - "59595:59595"
     networks:
       - dockernet
+networks:
+    dockernet:
+        external: true
