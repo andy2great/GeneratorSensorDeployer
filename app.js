@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const crypto = require("crypto");
 
 const app = express(); // app gère les endpoints
 const jsonParser = bodyParser.json(); // parse JSON
@@ -22,8 +23,25 @@ app.use(
   })
 );
 
-// tout au long, utilise JSON parser
 app.use(jsonParser);
+
+app.use((req, res, next) => {
+  if (req.body.ref !== "refs/heads/release") {
+    next("NOT EVEN");
+  }
+
+  const sig = Buffer.from(req.get("X-Hub-Signature-256") || "", "utf8");
+  const hmac = crypto.createHmac("sha256", "FsdwRfrq#ghWYNÈTegr;h^qgFQgrHS");
+  const digest = Buffer.from(
+    "sha256=" + hmac.update(req.rawBody ? req.rawBody : "").digest("hex"),
+    "utf8"
+  );
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
+    return next(`LOLLOLOLOLOOL`);
+  }
+
+  next();
+});
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
@@ -31,12 +49,12 @@ app.listen(port, () => {
 
 app.post("*", (req, res) => {
   console.log(req);
-  res.send("cool");
+  res.send("cool post");
 });
 
 app.get("*", (req, res) => {
   console.log(req);
-  res.send("cool");
+  res.send("cool get");
 });
 
 /*const server = http.createServer((req, res) => {
