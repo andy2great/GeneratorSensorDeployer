@@ -4,7 +4,6 @@ const cors = require("cors");
 const crypto = require("crypto");
 
 const app = express(); // app gère les endpoints
-const jsonParser = bodyParser.json(); // parse JSON
 const port = 54545; // Important: Défini le port ici
 const nodeCmd = require("node-cmd");
 
@@ -27,21 +26,29 @@ app.use(
   })
 );
 
-app.use(jsonParser);
+app.use(
+  bodyParser.json({
+    verify: (req, res, buf, encoding) => {
+      if (buf && buf.length) {
+        req.rawBody = buf.toString(encoding || "utf8");
+      }
+    },
+  })
+);
 
 app.use((req, res, next) => {
   if (req.body.ref !== "refs/heads/release") {
     next("NOT EVEN");
   }
 
-  if (!req.body) {
+  if (!req.rawBody) {
     return next("Request body empty");
   }
 
   const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
   const hmac = crypto.createHmac(sigHashAlg, secret);
   const digest = Buffer.from(
-    sigHashAlg + "=" + hmac.update(req.body).digest("hex"),
+    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
     "utf8"
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
