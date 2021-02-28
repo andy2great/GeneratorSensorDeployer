@@ -67,10 +67,10 @@ app.get("*", (req, res) => {
 
 const deploy = (req, res) => {
   return cmdCall(
-    "cd ..\\GeneratorSensorGateringInterface\\ && ls && sudo git pull"
+    "cd ../GeneratorSensorGateringInterface && ls && sudo git pull"
   )
     .then(() =>
-      cmdCall("cd ..\\GeneratorSensorGateringServer\\ && ls && sudo git pull")
+      cmdCall("cd ../GeneratorSensorGateringServer && ls && sudo git pull")
     )
     .then(() => cmdCall("ls && sudo git pull"))
     .then(() => cmdCall("sudo docker-compose down"))
