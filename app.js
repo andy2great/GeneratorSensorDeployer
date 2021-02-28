@@ -31,10 +31,12 @@ app.listen(port, () => {
 
 app.post("*", (req, res) => {
   console.log(req);
+  res.send("cool");
 });
 
 app.get("*", (req, res) => {
   console.log(req);
+  res.send("cool");
 });
 
 /*const server = http.createServer((req, res) => {
