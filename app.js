@@ -8,6 +8,10 @@ const jsonParser = bodyParser.json(); // parse JSON
 const port = 54545; // Important: Défini le port ici
 const nodeCmd = require("node-cmd");
 
+const secret = "FsdwRfrq#ghWYNÈTegr;h^qgFQgrHS";
+const sigHeaderName = "x-hub-signature-256";
+const sigHashAlg = "sha256";
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -30,14 +34,18 @@ app.use((req, res, next) => {
     next("NOT EVEN");
   }
 
-  const sig = Buffer.from(req.get("X-Hub-Signature-256") || "", "utf8");
-  const hmac = crypto.createHmac("sha256", "FsdwRfrq#ghWYNÈTegr;h^qgFQgrHS");
+  if (!req.rawBody) {
+    return next("Request body empty");
+  }
+
+  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
+  const hmac = crypto.createHmac(sigHashAlg, secret);
   const digest = Buffer.from(
-    "sha256=" + hmac.update(req.rawBody ? req.rawBody : "").digest("hex"),
+    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
     "utf8"
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    return next(`LOLLOLOLOLOOL`);
+    return next("LOLOLLOLO");
   }
 
   next();
