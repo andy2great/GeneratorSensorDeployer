@@ -33,6 +33,10 @@ app.post("*", (req, res) => {
   console.log(req);
 });
 
+app.get("*", (req, res) => {
+  console.log(req);
+});
+
 /*const server = http.createServer((req, res) => {
   cmdCall("cd ..\\GeneratorSensorGateringInterface\\ && ls && sudo git pull")
     .then(() =>
