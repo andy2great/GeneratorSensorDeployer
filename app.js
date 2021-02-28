@@ -34,14 +34,14 @@ app.use((req, res, next) => {
     next("NOT EVEN");
   }
 
-  if (!req.rawBody) {
+  if (!req.body) {
     return next("Request body empty");
   }
 
   const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
   const hmac = crypto.createHmac(sigHashAlg, secret);
   const digest = Buffer.from(
-    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
+    sigHashAlg + "=" + hmac.update(req.body).digest("hex"),
     "utf8"
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
