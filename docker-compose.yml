@@ -1,14 +1,29 @@
-version: "3.3"
+version: '3.3'
 services:
   interface:
     build: ../GeneratorSensorGateringInterface
     restart: always
     ports:
-      - "80:80"
+      - '80:80'
   server:
     build: ../GeneratorSensorGateringServer
     restart: always
     ports:
-      - "59595:59595"
+      - '59595:59595'
     extra_hosts:
-      - "localhost:10.0.4.2"
+      - 'localhost:10.0.4.2'
+  reverse-proxy:
+    image: valian/docker-nginx-auto-ssl:1.0.0
+    container_name: reverse-proxy
+    restart: on-failure
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./.ssl-data:/etc/resty-auto-ssl
+    environment:
+      ALLOWED_DOMAINS: 'genpower.com'
+      SITES: 'genpower.com=interface:80'
+      FORCE_HTTPS: 'true'
+    depends_on:
+      - interface
