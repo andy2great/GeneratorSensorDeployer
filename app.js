@@ -32,7 +32,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  if (req.body.ref !== "refs/heads/release") {
+  if (req.body.ref !== "refs/heads/dev") {
     next("NOT EVEN");
   }
 
